@@ -1,0 +1,33 @@
+{
+    "locale": "en",
+    "servers": {
+        "0000000000": {
+            "bot": {
+                "commandPrefix": ".",
+                "guildId": 0000000000,
+                "token": "<DISCORD_BOT_TOKEN>",
+                "status": "Reporting Pokemon...",
+                "ownerId": 0000000000
+            },
+            "dailyStats": {
+                "shiny": {
+                    "enabled": false,
+                    "clearMessages": false,
+                    "channelId": 0000000000
+                },
+                "iv": {
+                    "enabled": false,
+                    "clearMessages": false,
+                    "channelId": 0000000000
+                }
+            }
+        }
+    },
+    "database": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "username": "rdmuser",
+        "password": "pass123!",
+        "database": "rdmdb"
+    }
+}
