@@ -6,8 +6,13 @@
     using System.Text;
     using System.Threading.Tasks;
 
+    using Microsoft.Extensions.Logging;
+
     public static class NetUtils
     {
+        private static readonly ILogger _logger =
+            LoggerFactory.Create(x => x.AddConsole()).CreateLogger(nameof(NetUtils));
+
         public static string Get(string url)
         {
             return GetAsync(url).Result;
@@ -30,7 +35,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to download data from {url}: {ex}");
+                _logger.LogError($"Failed to download data from {url}: {ex}");
             }
             return null;
         }
@@ -70,7 +75,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to post data to {url}: {ex}");
+                _logger.LogError($"Failed to post data to {url}: {ex}");
             }
             return null;
         }

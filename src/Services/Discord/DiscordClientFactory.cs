@@ -7,6 +7,7 @@
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
+    using Microsoft.Extensions.Logging;
 
     using PokemonStatsReporter.Commands;
     using PokemonStatsReporter.Configuration;
@@ -14,6 +15,9 @@
 
     public class DiscordClientFactory
     {
+        private static readonly ILogger<DiscordClientFactory> _logger =
+            new Logger<DiscordClientFactory>(LoggerFactory.Create(x => x.AddConsole()));
+
         public static DiscordClient CreateDiscordClient(DiscordServerConfig config, IServiceProvider services)
         {
             if (string.IsNullOrEmpty(config?.Bot?.Token))
@@ -69,7 +73,7 @@
         private static async Task Commands_CommandExecuted(CommandsNextExtension commands, CommandExecutionEventArgs e)
         {
             // let's log the name of the command and user
-            Console.WriteLine($"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
+            _logger.LogInformation($"{e.Context.User.Username} successfully executed '{e.Command.QualifiedName}'", DateTime.Now);
 
             // since this method is not async, let's return
             // a completed task, so that no additional work
@@ -79,7 +83,7 @@
 
         private static async Task Commands_CommandErrored(CommandsNextExtension commands, CommandErrorEventArgs e)
         {
-            Console.WriteLine($"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? e.Context.Message.Content}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
+            _logger.LogError($"{e.Context.User.Username} tried executing '{e.Command?.QualifiedName ?? e.Context.Message.Content}' but it errored: {e.Exception.GetType()}: {e.Exception.Message ?? "<no message>"}", DateTime.Now);
 
             // let's check if the error is a result of lack of required permissions
             if (e.Exception is DSharpPlus.CommandsNext.Exceptions.ChecksFailedException)
@@ -121,11 +125,11 @@
             }
             else if (e.Exception is DSharpPlus.CommandsNext.Exceptions.CommandNotFoundException)
             {
-                Console.WriteLine($"User {e.Context.User.Username} tried executing command {e.Context.Message.Content} but command does not exist.");
+                _logger.LogError($"User {e.Context.User.Username} tried executing command {e.Context.Message.Content} but command does not exist.");
             }
             else
             {
-                Console.WriteLine($"User {e.Context.User.Username} tried executing command {e.Command?.Name} and unknown error occurred.\r\n: {e.Exception}");
+                _logger.LogError($"User {e.Context.User.Username} tried executing command {e.Command?.Name} and unknown error occurred.\r\n: {e.Exception}");
             }
         }
     }

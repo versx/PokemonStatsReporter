@@ -5,9 +5,13 @@
     using DSharpPlus;
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
+    using Microsoft.Extensions.Logging;
 
     public static class DiscordExtensions
     {
+        private static readonly ILogger _logger =
+            LoggerFactory.Create(x => x.AddConsole()).CreateLogger(nameof(DiscordExtensions));
+
         public static async Task<List<DiscordMessage>> RespondEmbedAsync(this DiscordMessage msg, string message)
         {
             return await msg.RespondEmbedAsync(message, DiscordColor.Green);
@@ -64,13 +68,13 @@
             }
             catch (DSharpPlus.Exceptions.NotFoundException)
             {
-                Console.WriteLine($"Failed to get Discord channel {channelId}, skipping...");
+                _logger.LogError($"Failed to get Discord channel {channelId}, skipping...");
                 return null;
             }
 
             if (channel == null)
             {
-                Console.WriteLine($"Failed to find channel by id {channelId}, skipping...");
+                _logger.LogError($"Failed to find channel by id {channelId}, skipping...");
                 return null;
             }
 
@@ -100,7 +104,7 @@
                 }
                 catch (JsonException ex)
                 {
-                    Console.WriteLine($"Error: {ex}");
+                    _logger.LogError($"Error: {ex}");
                     continue;
                 }
             }

@@ -151,7 +151,7 @@
             var data = File.ReadAllText(filePath);
             if (string.IsNullOrEmpty(data))
             {
-                Console.WriteLine($"{filePath} masterfile is empty.");
+                Console.WriteLine($"{filePath} file is empty.");
                 return default;
             }
 

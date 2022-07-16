@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.Extensions.Logging;
+
     using PokemonStatsReporter.Extensions;
     using PokemonStatsReporter.Utilities;
 
@@ -14,6 +16,9 @@
         private const string SourceLocaleUrl = "https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/locales/";
         private static readonly string _appLocalesFolder = Directory.GetCurrentDirectory() + $"/../{Strings.LocaleFolder}";
         private static readonly string _binLocalesFolder = Directory.GetCurrentDirectory() + $"/{Strings.BasePath}/{Strings.LocaleFolder}";
+
+        private static readonly ILogger<Translator> _logger =
+            new Logger<Translator>(LoggerFactory.Create(x => x.AddConsole()));
 
         #region Singleton
 
@@ -42,12 +47,12 @@
                 var json = await NetUtils.GetAsync(SourceLocaleUrl + locale);
                 if (json == null)
                 {
-                    Console.WriteLine($"Failed to fetch locales from {SourceLocaleUrl + locale}, skipping...");
+                    _logger.LogWarning($"Failed to fetch locales from {SourceLocaleUrl + locale}, skipping...");
                     return;
                 }
                 var remote = json.FromJson<Dictionary<string, string>>();
 
-                Console.WriteLine($"Creating locale {locale}");
+                _logger.LogInformation($"Creating locale {locale}");
 
                 var keys = remote.Keys.ToList();
                 for (var i = 0; i < keys.Count; i++)
@@ -74,7 +79,7 @@
                     Path.Combine(_binLocalesFolder, localeFile),
                     remote.ToJson()
                 );
-                Console.WriteLine($"{localeFile} file saved.");
+                _logger.LogInformation($"{localeFile} file saved.");
             }
         }
 
@@ -87,8 +92,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to find locale translation for key '{value}'");
-                Console.WriteLine(ex);
+                _logger.LogError($"Failed to find locale translation for key '{value}'\nError: {ex}");
             }
             return value;
         }
@@ -104,8 +108,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to find locale translation for key '{value}' and arguments: '{string.Join(",", args)}'");
-                Console.WriteLine(ex);
+                _logger.LogError($"Failed to find locale translation for key '{value}' and arguments: '{string.Join(",", args)}'\nError: {ex}");
             }
             return value;
         }

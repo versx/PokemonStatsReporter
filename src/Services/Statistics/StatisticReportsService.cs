@@ -21,7 +21,8 @@
     {
         #region Variables
 
-        private readonly ILogger<StatisticReportsService> _logger;
+        private static readonly ILogger<StatisticReportsService> _logger =
+            new Logger<StatisticReportsService>(LoggerFactory.Create(x => x.AddConsole()));
         private readonly Dictionary<string, MidnightTimer> _tzMidnightTimers;
         private readonly Config _config;
         private readonly IDiscordClientService _discordService;
@@ -34,7 +35,6 @@
             Config config,
             IDiscordClientService discordService)
         {
-            _logger = new Logger<StatisticReportsService>(LoggerFactory.Create(x => x.AddConsole())); ;
             _config = config;
             _discordService = discordService;
             _tzMidnightTimers = new Dictionary<string, MidnightTimer>();
@@ -46,7 +46,7 @@
 
         public void Start()
         {
-            _logger.LogDebug($"Starting daily statistic reporting hosted service...");
+            _logger.LogDebug($"Starting daily statistic reporting service...");
 
             var localZone = TimeZoneInfo.Local;
             var timezone = localZone.StandardName;
@@ -60,7 +60,7 @@
 
         public void Stop()
         {
-            _logger.LogDebug($"Stopping daily statistic reporting hosted service...");
+            _logger.LogDebug($"Stopping daily statistic reporting service...");
 
             foreach (var (_, midnightTimer) in _tzMidnightTimers)
             {
@@ -71,6 +71,8 @@
 
         public void Dispose()
         {
+            _logger.LogInformation($"Garbage collector disposing of daily statistic reporting service...");
+
             _tzMidnightTimers.Clear();
 
             GC.SuppressFinalize(this);
@@ -81,7 +83,7 @@
             if (!config.Servers.ContainsKey(guildId))
             {
                 // Guild not configured
-                Console.WriteLine(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
+                _logger.LogError(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
                 return;
             }
 
@@ -90,14 +92,14 @@
             if (!(statsConfig?.Enabled ?? false))
             {
                 // Shiny statistics reporting not enabled
-                Console.WriteLine($"Skipping shiny stats posting for guild '{guildId}', reporting not enabled.");
+                _logger.LogDebug($"Skipping shiny stats posting for guild '{guildId}', reporting not enabled.");
                 return;
             }
 
             if (!client.Guilds.ContainsKey(guildId))
             {
                 // Discord client not in specified guild
-                Console.WriteLine($"Discord client is not in guild '{guildId}'");
+                _logger.LogWarning($"Discord client is not in guild '{guildId}'");
                 return;
             }
 
@@ -106,28 +108,27 @@
             if (!guild.Channels.ContainsKey(channelId) || channelId == 0)
             {
                 // Discord channel does not exist in guild
-                Console.WriteLine($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
+                _logger.LogWarning($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
                 return;
             }
 
             var statsChannel = await client.GetChannelAsync(channelId);
             if (statsChannel == null)
             {
-                Console.WriteLine($"Failed to get channel id {channelId} to post shiny stats, are you sure it exists?");
+                _logger.LogError($"Failed to get channel id {channelId} to post shiny stats, are you sure it exists?");
                 return;
             }
 
             if (statsConfig?.ClearMessages ?? false)
             {
-                Console.WriteLine($"Starting shiny statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
+                _logger.LogInformation($"Starting shiny statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
                 await client.DeleteMessagesAsync(channelId);
             }
 
             var stats = await GetShinyStatsAsync(config.Database.ToString());
             if ((stats?.Count ?? 0) == 0)
             {
-                // TODO: Failed to get shiny stats from database
-                Console.WriteLine($"Failed to get shiny stats from database, returned 0 entries.");
+                _logger.LogError($"Failed to get shiny stats from database, returned 0 entries.");
                 return;
             }
 
@@ -147,8 +148,12 @@
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
                 var pkmnStats = stats[pokemonId];
-                var chance = pkmnStats.Shiny == 0 || pkmnStats.Total == 0 ? 0 : Convert.ToInt32(pkmnStats.Total / pkmnStats.Shiny);
-                var message = chance == 0 ? "SHINY_STATS_MESSAGE" : "SHINY_STATS_MESSAGE_WITH_RATIO";
+                var chance = pkmnStats.Shiny == 0 || pkmnStats.Total == 0
+                    ? 0
+                    : Convert.ToInt32(pkmnStats.Total / pkmnStats.Shiny);
+                var message = chance == 0
+                    ? "SHINY_STATS_MESSAGE"
+                    : "SHINY_STATS_MESSAGE_WITH_RATIO";
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate(message).FormatText(new
                 {
                     pokemon = pkmnName,
@@ -178,7 +183,7 @@
             if (!config.Servers.ContainsKey(guildId))
             {
                 // Guild not configured
-                Console.WriteLine(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
+                _logger.LogError(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
                 return;
             }
 
@@ -187,14 +192,14 @@
             if (!(statsConfig?.Enabled ?? false))
             {
                 // Hundo statistics reporting not enabled
-                Console.WriteLine($"Skipping hundo stats posting for guild '{guildId}', reporting not enabled.");
+                _logger.LogDebug($"Skipping hundo stats posting for guild '{guildId}', reporting not enabled.");
                 return;
             }
 
             if (!client.Guilds.ContainsKey(guildId))
             {
                 // Discord client not in specified guild
-                Console.WriteLine($"Discord client is not in guild '{guildId}'");
+                _logger.LogWarning($"Discord client is not in guild '{guildId}'");
                 return;
             }
 
@@ -203,28 +208,27 @@
             if (!guild.Channels.ContainsKey(channelId) || channelId == 0)
             {
                 // Discord channel does not exist in guild
-                Console.WriteLine($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
+                _logger.LogWarning($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
                 return;
             }
 
             var statsChannel = await client.GetChannelAsync(channelId);
             if (statsChannel == null)
             {
-                Console.WriteLine($"Failed to get channel id {channelId} to post hundo stats, are you sure it exists?");
+                _logger.LogError($"Failed to get channel id {channelId} to post hundo stats, are you sure it exists?");
                 return;
             }
 
             if (statsConfig?.ClearMessages ?? false)
             {
-                Console.WriteLine($"Starting hundo statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
+                _logger.LogInformation($"Starting hundo statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
                 await client.DeleteMessagesAsync(channelId);
             }
 
             var stats = await GetHundoStatsAsync(config.Database.ToString());
             if ((stats?.Count ?? 0) == 0)
             {
-                // TODO: Failed to get hundo stats from database
-                Console.WriteLine($"Failed to get hundo stats from database, returned 0 entries.");
+                _logger.LogError($"Failed to get hundo stats from database, returned 0 entries.");
                 return;
             }
 
@@ -244,8 +248,12 @@
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
                 var pkmnStats = stats[pokemonId];
-                var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0 ? 0 : Convert.ToInt32(pkmnStats.Total / pkmnStats.Count);
-                var message = chance == 0 ? "HUNDO_STATS_MESSAGE" : "HUNDO_STATS_MESSAGE_WITH_RATIO";
+                var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0
+                    ? 0
+                    : Convert.ToInt32(pkmnStats.Total / pkmnStats.Count);
+                var message = chance == 0
+                    ? "HUNDO_STATS_MESSAGE"
+                    : "HUNDO_STATS_MESSAGE_WITH_RATIO";
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate(message).FormatText(new
                 {
                     pokemon = pkmnName,
@@ -270,12 +278,12 @@
             }));
         }
 
-        public static async Task PostIvStatsAsync(ulong guildId, Config config, DiscordClient client, double minimumIV)
+        public static async Task PostIvStatsAsync(ulong guildId, Config config, DiscordClient client, double minimumIV = 100)
         {
             if (!config.Servers.ContainsKey(guildId))
             {
                 // Guild not configured
-                Console.WriteLine(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
+                _logger.LogError(Translator.Instance.Translate("ERROR_NOT_IN_DISCORD_SERVER"));
                 return;
             }
 
@@ -283,7 +291,7 @@
             if (!server.DailyStats.IvStats.Enabled)
             {
                 // Custom IV statistics reporting not enabled
-                Console.WriteLine($"Skipping IV stats posting for guild '{guildId}', reporting not enabled.");
+                _logger.LogDebug($"Skipping IV stats posting for guild '{guildId}', reporting not enabled.");
                 return;
             }
 
@@ -291,7 +299,7 @@
             if (!client.Guilds.ContainsKey(guildId))
             {
                 // Discord client not in specified guild
-                Console.WriteLine($"Discord client is not in guild '{guildId}'");
+                _logger.LogWarning($"Discord client is not in guild '{guildId}'");
                 return;
             }
 
@@ -300,29 +308,35 @@
             if (!guild.Channels.ContainsKey(channelId) || channelId == 0)
             {
                 // Discord channel does not exist in guild
-                Console.WriteLine($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
+                _logger.LogWarning($"Channel with ID '{channelId}' does not exist in guild '{guild.Name}' ({guildId})");
                 return;
             }
 
             var statsChannel = await client.GetChannelAsync(channelId);
             if (statsChannel == null)
             {
-                Console.WriteLine($"Failed to get channel id {channelId} to post IV stats.");
-                //await ctx.RespondEmbedAsync(Translator.Instance.Translate("IV_STATS_INVALID_CHANNEL").FormatText(ctx.User.Username), DiscordColor.Yellow);
+                _logger.LogError($"Failed to get channel id {channelId} to post IV stats.");
                 return;
             }
 
             if (statsConfig?.ClearMessages ?? false)
             {
-                Console.WriteLine($"Starting IV statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
+                _logger.LogInformation($"Starting IV statistics channel message clearing for channel '{channelId}' in guild '{guildId}'...");
                 await client.DeleteMessagesAsync(channelId);
+            }
+
+            if (minimumIV == -1)
+            {
+                // If report triggered via Discord command and no minimum IV specified,
+                // use default in stats config. If no minimum IV specified in config
+                // use default of 100.
+                minimumIV = statsConfig?.MinimumIV ?? 100;
             }
 
             var stats = GetIvStats(config.Database.ToString(), minimumIV);
             if ((stats?.Count ?? 0) == 0)
             {
-                // TODO: Failed to get IV stats from database
-                Console.WriteLine($"Failed to get IV stats from database, returned 0 entries.");
+                _logger.LogError($"Failed to get IV stats from database, returned 0 entries.");
                 return;
             }
 
@@ -341,16 +355,18 @@
                 if (pokemonId == 0)
                     continue;
 
-                var count = stats[pokemonId];
-                var total = 0; // TODO: Total IV stats
-                var ratio = 0; // TODO: Ratio IV stats
+                //var count = stats[pokemonId];
+                //var total = 0; // TODO: Total IV stats
+                //var ratio = 0; // TODO: Ratio IV stats
                 var pkmnStats = new { Count = 0, Total = 0 }; // stats[pokemonId];
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
                 //sb.AppendLine($"- {pkmn.Name} (#{key}) {count:N0}");
 
                 //var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0 ? 0 : Convert.ToInt32(pkmnStats.Total / pkmnStats.Count);
                 var chance = 0;
-                var message = chance == 0 ? "IV_STATS_MESSAGE" : "IV_STATS_MESSAGE_WITH_RATIO";
+                var message = chance == 0
+                    ? "IV_STATS_MESSAGE"
+                    : "IV_STATS_MESSAGE_WITH_RATIO";
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate(message).FormatText(new
                 {
                     pokemon = pkmnName,
@@ -358,6 +374,7 @@
                     count = pkmnStats.Count.ToString("N0"),
                     total = pkmnStats.Total.ToString("N0"),
                     chance,
+                    iv = minimumIV,
                 }));
             }
 
@@ -366,6 +383,7 @@
                 count = 100,
                 total = 1000,
                 chance = 1,
+                iv = minimumIV,
                 // TODO: count = total.Count.ToString("N0"),
                 // TODO: total = total.Total.ToString("N0"),
                 // TODO: chance = totalRatio,
@@ -386,6 +404,8 @@
 
         private async void OnMidnightTimerTimeReached(DateTime time, string timezone)
         {
+            _logger.LogInformation($"Midnight timer triggered, starting statistics reporting...");
+
             foreach (var (guildId, guildConfig) in _config.Servers)
             {
                 if (!_discordService.DiscordClients.ContainsKey(guildId))
@@ -412,7 +432,7 @@
                 if (dailyStatsConfig?.IvStats?.Enabled ?? false)
                 {
                     _logger.LogInformation($"Starting daily IV stats posting for guild '{guildId}'...");
-                    await PostHundoStatsAsync(guildId, _config, client);
+                    await PostIvStatsAsync(guildId, _config, client);
                     _logger.LogInformation($"Finished daily IV stats posting for guild '{guildId}'.");
                 }
 
@@ -465,7 +485,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex}");
+                _logger.LogError($"GetShinyStatsAsync: {ex}");
             }
             return list;
         }
@@ -513,7 +533,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex}");
+                _logger.LogError($"GetHundoStatsAsync: {ex}");
             }
             return list;
         }
@@ -549,7 +569,7 @@
 
                 sw.Stop();
                 var totalSeconds = Math.Round(sw.Elapsed.TotalSeconds, 4);
-                Console.WriteLine($"Took: {totalSeconds}");
+                _logger.LogDebug($"Took: {totalSeconds}");
 
                 // Final dictionary
                 //var filteredPokemonWithIV = pokemonWithIV.Where(p => p.IVReal >= minimumIV)
@@ -590,13 +610,14 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex}");
+                _logger.LogError($"GetIvStats: {ex}");
             }
             return null;
         }
 
         private static Dictionary<uint, Dictionary<double, ulong>> BuildIvStatsManifest(List<Pokemon> pokemon, double minimumIV = 100)
         {
+            // TODO: Replace method with Linq equivilant eventually
             var dict = new Dictionary<uint, Dictionary<double, ulong>>();
             foreach (var pkmn in pokemon)
             {
@@ -613,7 +634,7 @@
                 }
                 dict[pkmn.PokemonId][pkmn.IVReal]++;
             }
-            Console.WriteLine($"Stats: {dict}");
+            _logger.LogError($"BuildIvStatsManifest: {dict}");
             return dict;
         }
 
