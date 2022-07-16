@@ -14,5 +14,12 @@
     "HUNDO_STATS_TITLE": "[**Hundo Pokemon stats for {{date}}**]",
     "HUNDO_STATS_TOTAL_MESSAGE": "Found **{{count}}** total hundos out of **{{total}}** possiblities.",
     "HUNDO_STATS_TOTAL_MESSAGE_WITH_RATIO": "Found **{{count}}** total hundos out of **{{total}}** possiblities with a **1/{{chance}}** ratio in total.",
+    "IV_STATS_INVALID_CHANNEL": "{{author}} IV stats channel does not exist.",
+    "IV_STATS_MESSAGE": "**{{pokemon}} (#{{id}})**    |    **{{count}}** {{iv}}% IV Pokemon out of **{{total}}** total seen in the last 24 hours.",
+    "IV_STATS_MESSAGE_WITH_RATIO": "**{{pokemon}} (#{{id}})**    |    **{{count}}** {{iv}}% IV Pokemon out of **{{total}}** total seen in the last 24 hours with a **1/{{chance}}** ratio.",
+    "IV_STATS_NEWLINE": "----------------------------------------------",
+    "IV_STATS_TITLE": "[**{{iv}}% IV Pokemon stats for {{date}}**]",
+    "IV_STATS_TOTAL_MESSAGE": "Found **{{count}}** total {{iv}}% IV Pokemon out of **{{total}}** possiblities.",
+    "IV_STATS_TOTAL_MESSAGE_WITH_RATIO": "Found **{{count}}** total {{iv}}% IV Pokemon out of **{{total}}** possiblities with a **1/{{chance}}** ratio in total.",
     "UNKNOWN": "Unknown"
 }
