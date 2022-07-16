@@ -1,10 +1,10 @@
-﻿namespace StatsReporter.Configuration
+﻿namespace PokemonStatsReporter.Configuration
 {
     using System.Text.Json.Serialization;
 
     using Microsoft.Extensions.Logging;
 
-    using StatsReporter.Extensions;
+    using PokemonStatsReporter.Extensions;
 
     /// <summary>
     /// Configuration file class

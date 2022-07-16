@@ -1,8 +1,6 @@
-﻿namespace StatsReporter.Configuration
+﻿namespace PokemonStatsReporter.Configuration
 {
     using System.Text.Json.Serialization;
-
-    using PokemonStatsReporter.Configuration;
 
     public class DailyStatsConfig
     {

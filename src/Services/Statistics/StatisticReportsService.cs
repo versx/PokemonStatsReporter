@@ -1,16 +1,16 @@
-﻿namespace StatsReporter.Services.Statistics
+﻿namespace PokemonStatsReporter.Services.Statistics
 {
     using DSharpPlus;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
-    using StatsReporter.Configuration;
-    using StatsReporter.Data.Entities;
-    using StatsReporter.Data.Factories;
-    using StatsReporter.Extensions;
-    using StatsReporter.Services.Discord;
-    using StatsReporter.Services.Localization;
-    using StatsReporter.Services.Statistics.Models;
+    using PokemonStatsReporter.Configuration;
+    using PokemonStatsReporter.Data.Entities;
+    using PokemonStatsReporter.Data.Factories;
+    using PokemonStatsReporter.Extensions;
+    using PokemonStatsReporter.Services.Discord;
+    using PokemonStatsReporter.Services.Localization;
+    using PokemonStatsReporter.Services.Statistics.Models;
 
     // TODO: Simplified IV stats postings via command with arg `list`
     // TODO: Get total IV found for IV stats

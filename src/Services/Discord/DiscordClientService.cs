@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Discord
+﻿namespace PokemonStatsReporter.Services.Discord
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +11,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
 
-    using StatsReporter.Configuration;
+    using PokemonStatsReporter.Configuration;
 
     public class DiscordClientService : IDiscordClientService
     {

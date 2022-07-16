@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Data.Entities
+﻿namespace PokemonStatsReporter.Data.Entities
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;

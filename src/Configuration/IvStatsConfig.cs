@@ -2,7 +2,7 @@
 {
     using System.Text.Json.Serialization;
 
-    using StatsReporter.Configuration;
+    using PokemonStatsReporter.Configuration;
 
     public class IvStatsConfig : StatsConfig
     {

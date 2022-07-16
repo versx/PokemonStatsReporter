@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Commands
+﻿namespace PokemonStatsReporter.Commands
 {
     using System;
     using System.Linq;
@@ -8,8 +8,8 @@
     using DSharpPlus.CommandsNext;
     using DSharpPlus.CommandsNext.Attributes;
 
-    using StatsReporter.Configuration;
-    using StatsReporter.Services.Statistics;
+    using PokemonStatsReporter.Configuration;
+    using PokemonStatsReporter.Services.Statistics;
 
     public class DailyStats : BaseCommandModule
     {

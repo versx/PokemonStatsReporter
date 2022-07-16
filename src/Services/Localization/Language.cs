@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Localization
+﻿namespace PokemonStatsReporter.Services.Localization
 {
     using System;
     using System.Collections;
@@ -6,7 +6,7 @@
     using System.Globalization;
     using System.IO;
 
-    using StatsReporter.Extensions;
+    using PokemonStatsReporter.Extensions;
 
     public class Language<TFrom, TTo, TDictionary> : IEnumerable<KeyValuePair<TFrom, TTo>>
         where TDictionary : IDictionary<TFrom, TTo>, new()

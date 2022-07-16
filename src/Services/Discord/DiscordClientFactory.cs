@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Discord
+﻿namespace PokemonStatsReporter.Services.Discord
 {
     using System;
     using System.Linq;
@@ -8,9 +8,9 @@
     using DSharpPlus.CommandsNext;
     using DSharpPlus.Entities;
 
-    using StatsReporter.Commands;
-    using StatsReporter.Configuration;
-    using StatsReporter.Extensions;
+    using PokemonStatsReporter.Commands;
+    using PokemonStatsReporter.Configuration;
+    using PokemonStatsReporter.Extensions;
 
     public class DiscordClientFactory
     {

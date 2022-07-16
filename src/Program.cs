@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 
-using StatsReporter;
-using StatsReporter.Configuration;
-using StatsReporter.Services.Discord;
-using StatsReporter.Services.Localization;
-using StatsReporter.Services.Statistics;
+using PokemonStatsReporter;
+using PokemonStatsReporter.Configuration;
+using PokemonStatsReporter.Services.Discord;
+using PokemonStatsReporter.Services.Localization;
+using PokemonStatsReporter.Services.Statistics;
 
 // Load configuration file
 var logger = new Logger<Program>(LoggerFactory.Create(x => x.AddConsole()));

@@ -1,10 +1,11 @@
-﻿namespace StatsReporter.Services
+﻿namespace PokemonStatsReporter.Services
 {
-    using Microsoft.Win32;
     using System;
     using System.Timers;
 
-    using StatsReporter.Extensions;
+    using Microsoft.Win32;
+
+    using PokemonStatsReporter.Extensions;
 
     /// <summary>
     /// Midnight Timer Delegate for the event

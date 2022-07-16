@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Discord
+﻿namespace PokemonStatsReporter.Services.Discord
 {
     using DSharpPlus;
 

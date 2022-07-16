@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Localization
+﻿namespace PokemonStatsReporter.Services.Localization
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@
     using System.Linq;
     using System.Threading.Tasks;
 
-    using StatsReporter.Extensions;
-    using StatsReporter.Utilities;
+    using PokemonStatsReporter.Extensions;
+    using PokemonStatsReporter.Utilities;
 
     public class Translator : Language<string, string, Dictionary<string, string>>
     {

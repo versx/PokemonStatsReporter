@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Utilities
+﻿namespace PokemonStatsReporter.Utilities
 {
     using System;
     using System.Net;

@@ -1,8 +1,8 @@
-﻿namespace StatsReporter.Data.Contexts
+﻿namespace PokemonStatsReporter.Data.Contexts
 {
     using Microsoft.EntityFrameworkCore;
 
-    using StatsReporter.Data.Entities;
+    using PokemonStatsReporter.Data.Entities;
 
     public class MapDbContext : DbContext
     {
