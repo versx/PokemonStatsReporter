@@ -76,46 +76,6 @@
             GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        private async void OnMidnightTimerTimeReached(DateTime time, string timezone)
-        {
-            foreach (var (guildId, guildConfig) in _config.Servers)
-            {
-                if (!_discordService.DiscordClients.ContainsKey(guildId))
-                {
-                    continue;
-                }
-
-                var client = _discordService.DiscordClients[guildId];
-                var dailyStatsConfig = guildConfig.DailyStats;
-                if (dailyStatsConfig?.ShinyStats?.Enabled ?? false)
-                {
-                    _logger.LogInformation($"Starting daily shiny stats posting for guild '{guildId}'...");
-                    await PostShinyStatsAsync(guildId, _config, client);
-                    _logger.LogInformation($"Finished daily shiny stats posting for guild '{guildId}'.");
-                }
-
-                if (dailyStatsConfig?.HundoStats?.Enabled ?? false)
-                {
-                    _logger.LogInformation($"Starting daily hundo stats posting for guild '{guildId}'...");
-                    await PostHundoStatsAsync(guildId, _config, client);
-                    _logger.LogInformation($"Finished daily hundo stats posting for guild '{guildId}'.");
-                }
-
-                if (dailyStatsConfig?.IvStats?.Enabled ?? false)
-                {
-                    _logger.LogInformation($"Starting daily IV stats posting for guild '{guildId}'...");
-                    await PostHundoStatsAsync(guildId, _config, client);
-                    _logger.LogInformation($"Finished daily IV stats posting for guild '{guildId}'.");
-                }
-
-                _logger.LogInformation($"Finished daily stats posting for guild '{guildId}'...");
-            }
-
-            _logger.LogInformation($"Finished daily stats reporting for all guilds.");
-        }
-
         public static async Task PostShinyStatsAsync(ulong guildId, Config config, DiscordClient client)
         {
             if (!config.Servers.ContainsKey(guildId))
@@ -420,6 +380,48 @@
             */
         }
 
+        #endregion
+
+        #region Private Methods
+
+        private async void OnMidnightTimerTimeReached(DateTime time, string timezone)
+        {
+            foreach (var (guildId, guildConfig) in _config.Servers)
+            {
+                if (!_discordService.DiscordClients.ContainsKey(guildId))
+                {
+                    continue;
+                }
+
+                var client = _discordService.DiscordClients[guildId];
+                var dailyStatsConfig = guildConfig.DailyStats;
+                if (dailyStatsConfig?.ShinyStats?.Enabled ?? false)
+                {
+                    _logger.LogInformation($"Starting daily shiny stats posting for guild '{guildId}'...");
+                    await PostShinyStatsAsync(guildId, _config, client);
+                    _logger.LogInformation($"Finished daily shiny stats posting for guild '{guildId}'.");
+                }
+
+                if (dailyStatsConfig?.HundoStats?.Enabled ?? false)
+                {
+                    _logger.LogInformation($"Starting daily hundo stats posting for guild '{guildId}'...");
+                    await PostHundoStatsAsync(guildId, _config, client);
+                    _logger.LogInformation($"Finished daily hundo stats posting for guild '{guildId}'.");
+                }
+
+                if (dailyStatsConfig?.IvStats?.Enabled ?? false)
+                {
+                    _logger.LogInformation($"Starting daily IV stats posting for guild '{guildId}'...");
+                    await PostHundoStatsAsync(guildId, _config, client);
+                    _logger.LogInformation($"Finished daily IV stats posting for guild '{guildId}'.");
+                }
+
+                _logger.LogInformation($"Finished daily stats posting for guild '{guildId}'...");
+            }
+
+            _logger.LogInformation($"Finished daily stats reporting for all guilds.");
+        }
+
         internal static async Task<Dictionary<uint, ShinyPokemonStats>> GetShinyStatsAsync(string connectionString)
         {
             var list = new Dictionary<uint, ShinyPokemonStats>
@@ -615,19 +617,6 @@
             return dict;
         }
 
-
-        private static double CalculateIV(Pokemon pkmn)
-        {
-            if (pkmn.Attack == null || pkmn.Defense == null || pkmn.Stamina == null)
-            {
-                return -1;
-            }
-
-            var atk = pkmn.Attack ?? 0;
-            var def = pkmn.Defense ?? 0;
-            var sta = pkmn.Stamina ?? 0;
-
-            return Math.Round((sta + atk + def) * 100.0 / 45.0, 1);
-        }
+        #endregion
     }
 }
