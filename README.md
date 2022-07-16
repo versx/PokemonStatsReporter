@@ -17,5 +17,6 @@ Reports nightly at midnight all shiny, hundo, or custom IV statistics about Poke
 1. Start PokemonStatsReporter from the `bin` folder: `dotnet PokemonStatsReporter.dll`.  
 
 ## Available Commands  
-`.shiny-stats` - Posts shiny Pokemon statistics
-`.hundo-stats` - Posts hundred percent Pokemon statistics
+`.shiny-stats` - Posts shiny Pokemon statistics  
+`.hundo-stats` - Posts hundred percent Pokemon statistics  
+`.iv-stats [97]` - Posts Pokemon IV statistics that meet the provided minimum IV argument.  

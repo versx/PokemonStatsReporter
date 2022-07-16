@@ -15,10 +15,16 @@
                     "clearMessages": false,
                     "channelId": 0000000000
                 },
-                "iv": {
+                "hundo": {
                     "enabled": false,
                     "clearMessages": false,
                     "channelId": 0000000000
+                },
+                "iv": {
+                    "enabled": false,
+                    "clearMessages": false,
+                    "channelId": 0000000000,
+                    "minimumIV": 100
                 }
             }
         }

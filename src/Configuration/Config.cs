@@ -45,6 +45,7 @@
         public Config()
         {
             Locale = "en";
+            FileName = Strings.ConfigFileName;
         }
 
         /// <summary>

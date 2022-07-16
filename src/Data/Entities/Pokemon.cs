@@ -31,13 +31,6 @@
             JsonIgnore,
             NotMapped,
         ]
-        public string IV => IVReal == -1 ? "?" : IVReal + "%";
-
-        [
-
-            JsonIgnore,
-            NotMapped,
-        ]
         public double IVReal
         {
             get
@@ -90,6 +83,15 @@
             Column("display_pokemon_id"),
         ]
         public uint? DisplayPokemonId { get; set; }
+
+        [
+            JsonIgnore,
+            NotMapped,
+        ]
+        public bool IsMissingStats =>
+            Attack == null ||
+            Defense == null ||
+            Stamina == null;
 
         #endregion
     }

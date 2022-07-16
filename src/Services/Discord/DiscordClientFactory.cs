@@ -98,14 +98,17 @@
             }
             else if (e.Exception is ArgumentException)
             {
-                var config = (Config)commands.Services.GetService(typeof(Config));
-                var arguments = e.Command.Overloads[0];
+                var config = commands.Services.GetService(typeof(Config)) as Config;
+                var arguments = e.Command?.Overloads[0];
                 // The user lacks required permissions, 
                 var emoji = DiscordEmoji.FromName(e.Context.Client, ":x:");
 
-                var guildId = e.Context.Guild?.Id ?? e.Context.Client.Guilds.FirstOrDefault(guild => config.Servers.ContainsKey(guild.Key)).Key;
-                var prefix = config.Servers.ContainsKey(guildId) ? config.Servers[guildId].Bot.CommandPrefix : "!";
-                var example = $"Command Example: ```{prefix}{e.Command.Name} {string.Join(" ", arguments.Arguments.Select(arg => arg.IsOptional ? $"[{arg.Name}]" : arg.Name))}```\r\n*Parameters in brackets are optional.*";
+                var guildId = e.Context.Guild?.Id ?? e.Context.Client.Guilds.FirstOrDefault(guild => config?.Servers.ContainsKey(guild.Key) ?? false).Key;
+                var prefix = config?.Servers.ContainsKey(guildId) ?? false
+                    ? config.Servers[guildId].Bot.CommandPrefix
+                    : "!";
+                var args = string.Join(" ", arguments.Arguments.Select(arg => arg.IsOptional ? $"[{arg.Name}]" : arg.Name));
+                var example = $"Command Example: ```{prefix}{e.Command?.Name} {args}```\r\n*Parameters in brackets are optional.*";
 
                 // let's wrap the response into an embed
                 var embed = new DiscordEmbedBuilder
