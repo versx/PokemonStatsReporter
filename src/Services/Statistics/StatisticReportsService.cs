@@ -545,7 +545,7 @@
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
                 ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
-                var now = DateTime.UtcNow;
+                var now = DateTime.Now;
                 var hoursAgo = TimeSpan.FromHours(24);
 
                 var test = now.Subtract(hoursAgo);

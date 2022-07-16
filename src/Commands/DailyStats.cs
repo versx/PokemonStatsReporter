@@ -11,6 +11,7 @@
     using PokemonStatsReporter.Configuration;
     using PokemonStatsReporter.Services.Statistics;
 
+    [RequirePermissions(Permissions.KickMembers)]
     public class DailyStats : BaseCommandModule
     {
         private readonly Config _config;
@@ -52,7 +53,7 @@
             Command("iv-stats"),
             RequirePermissions(Permissions.KickMembers),
         ]
-        public async Task GetIVStatsAsync(CommandContext ctx, double minimumIV = -1) // TODO: Revert default back to 100?
+        public async Task GetIVStatsAsync(CommandContext ctx, double minimumIV = -1)
         {
             var guildId = ctx.Guild?.Id ?? ctx.Client.Guilds.Keys.FirstOrDefault(guildId => _config.Servers.ContainsKey(guildId));
             if (guildId > 0)
