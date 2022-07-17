@@ -60,8 +60,10 @@
 
                 _logger.LogInformation($"Creating locale {locale}...");
                 var remote = json.FromJson<Dictionary<string, string>>();
-                foreach (var (key, value) in remote)
+                var keys = remote.Keys.ToList();
+                for (var i = 0; i < keys.Count; i++)
                 {
+                    var key = keys[i];
                     // Make locale variables compliant with Handlebars/Mustache templating
                     remote[key] = remote[key].Replace("%", "{")
                                              .Replace("}", "}}");

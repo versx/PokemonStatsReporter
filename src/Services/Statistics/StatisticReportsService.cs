@@ -409,7 +409,7 @@
 
         #region Private Methods
 
-        private async void OnMidnightTimerTimeReached(DateTime time, string timezone)
+        private async void OnMidnightTimerTimeReached(object? sender, TimeReachedEventArgs e)
         {
             _logger.LogInformation($"Midnight timer triggered, starting statistics reporting...");
 

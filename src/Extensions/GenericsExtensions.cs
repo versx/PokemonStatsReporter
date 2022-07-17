@@ -170,7 +170,7 @@
                 }
 
                 // Key already exists, check if values are the same
-                if (result[key] != value)
+                if (result[key] != value && updateValues)
                 {
                     result[key] = value;
                 }
