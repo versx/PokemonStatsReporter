@@ -19,10 +19,11 @@
 
     // TODO: Fix Nidoran male/female symbol
     // TODO: Add custom date format
-    // TODO: Configurable stat hour check (i.e. 24 hours)
 
     public class StatisticReportsService : IStatisticReportsService, IDisposable
     {
+        private const string StatisticDateFormat = "yyyy/MM/dd";
+
         #region Variables
 
         private static readonly ILogger<StatisticReportsService> _logger =
@@ -129,7 +130,7 @@
                 await client.DeleteMessagesAsync(channelId);
             }
 
-            var stats = await GetShinyStatsAsync(config.Database.ToString());
+            var stats = await GetShinyStatsAsync(config.Database.ToString(), config.StatHours);
             if ((stats?.Count ?? 0) == 0)
             {
                 _logger.LogError($"Failed to get shiny stats from database, returned 0 entries.");
@@ -229,7 +230,7 @@
                 await client.DeleteMessagesAsync(channelId);
             }
 
-            var stats = await GetHundoStatsAsync(config.Database.ToString());
+            var stats = await GetHundoStatsAsync(config.Database.ToString(), config.StatHours);
             if ((stats?.Count ?? 0) == 0)
             {
                 _logger.LogError($"Failed to get hundo stats from database, returned 0 entries.");
@@ -337,7 +338,7 @@
                 minimumIV = statsConfig?.MinimumIV ?? 100;
             }
 
-            var stats = GetIvStats(config.Database.ToString(), minimumIV);
+            var stats = GetIvStats(config.Database.ToString(), minimumIV, config.StatHours);
             if ((stats?.Count ?? 0) == 0)
             {
                 _logger.LogError($"Failed to get IV stats from database, returned 0 entries.");
@@ -446,7 +447,7 @@
             _logger.LogInformation($"Finished daily stats reporting for all guilds.");
         }
 
-        internal static async Task<Dictionary<uint, ShinyPokemonStats>> GetShinyStatsAsync(string connectionString)
+        internal static async Task<Dictionary<uint, ShinyPokemonStats>> GetShinyStatsAsync(string connectionString, ushort statHours = 24)
         {
             var list = new Dictionary<uint, ShinyPokemonStats>
             {
@@ -456,12 +457,12 @@
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
                 ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
-                var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(24)).ToString("yyyy/MM/dd");
+                var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(statHours)).ToString(StatisticDateFormat);
                 var pokemonShiny = (await ctx.PokemonStatsShiny.ToListAsync())
-                    .Where(stat => stat.Date.ToString("yyyy/MM/dd") == yesterday)
+                    .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)
                     .ToList();
                 var pokemonIV = (await ctx.PokemonStatsIV.ToListAsync())
-                    .Where(stat => stat.Date.ToString("yyyy/MM/dd") == yesterday)?
+                    .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)?
                     .ToDictionary(stat => stat.PokemonId);
 
                 for (var i = 0; i < pokemonShiny.Count; i++)
@@ -494,7 +495,7 @@
             return list;
         }
 
-        internal static async Task<Dictionary<uint, HundoPokemonStats>> GetHundoStatsAsync(string connectionString)
+        internal static async Task<Dictionary<uint, HundoPokemonStats>> GetHundoStatsAsync(string connectionString, ushort statHours = 24)
         {
             var list = new Dictionary<uint, HundoPokemonStats>
             {
@@ -504,12 +505,12 @@
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
                 ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
-                var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(24)).ToString("yyyy/MM/dd");
+                var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(statHours)).ToString(StatisticDateFormat);
                 var pokemonHundo = (await ctx.PokemonStatsHundo.ToListAsync())
-                    .Where(stat => stat.Date.ToString("yyyy/MM/dd") == yesterday)
+                    .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)
                     .ToList();
                 var pokemonIV = (await ctx.PokemonStatsIV.ToListAsync())
-                    .Where(stat => stat.Date.ToString("yyyy/MM/dd") == yesterday)?
+                    .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)?
                     .ToDictionary(stat => stat.PokemonId);
 
                 for (var i = 0; i < pokemonHundo.Count; i++)
@@ -542,7 +543,7 @@
             return list;
         }
 
-        internal static Dictionary<uint, Dictionary<double, ulong>> GetIvStats(string connectionString, double minimumIV)
+        internal static Dictionary<uint, Dictionary<double, ulong>> GetIvStats(string connectionString, double minimumIV, ushort statHours = 24)
         {
             // TODO: Get IV stats with and without IV Pokemon { 25: { total, count, date }, etc.. }
             try
@@ -550,7 +551,7 @@
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
                 ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
                 var now = DateTime.Now;
-                var hoursAgo = TimeSpan.FromHours(4); // TODO: 24 hours
+                var hoursAgo = TimeSpan.FromHours(statHours);
 
                 var test = now.Subtract(hoursAgo);
                 var yesterday = Convert.ToUInt64(Math.Round(test.GetUnixTimestamp()));

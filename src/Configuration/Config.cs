@@ -2,8 +2,6 @@
 {
     using System.Text.Json.Serialization;
 
-    using Microsoft.Extensions.Logging;
-
     using PokemonStatsReporter.Extensions;
 
     /// <summary>
@@ -18,6 +16,13 @@
         /// </summary>
         [JsonPropertyName("locale")]
         public string Locale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount of hours to check for previous data
+        /// to include with statistic reports
+        /// </summary>
+        [JsonPropertyName("statHours")]
+        public ushort StatHours { get; set; }
 
         /// <summary>
         /// Gets or sets the Discord servers configuration

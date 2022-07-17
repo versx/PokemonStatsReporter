@@ -1,5 +1,6 @@
 {
     "locale": "en",
+    "statHours": 24,
     "servers": {
         "0000000000": {
             "bot": {
