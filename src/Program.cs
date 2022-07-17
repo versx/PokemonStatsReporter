@@ -16,7 +16,7 @@ if (config == null)
 }
 
 // Generate and load translation files
-await Translator.CreateLocaleFiles();
+await Translator.CreateLocaleFilesAsync();
 Translator.Instance.SetLocale(config.Locale);
 
 // Start Discord clients service

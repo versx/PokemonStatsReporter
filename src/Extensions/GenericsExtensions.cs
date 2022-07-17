@@ -158,17 +158,22 @@
             return data.FromJson<T>();
         }
 
-        public static Dictionary<string, string> MergeDictionaries(this Dictionary<string, string> locales1, Dictionary<string, string> locales2)
+        public static Dictionary<string, string> Merge(this Dictionary<string, string> locales1, Dictionary<string, string> locales2, bool updateValues = false)
         {
             var result = locales1;
             foreach (var (key, value) in locales2)
             {
-                if (result.ContainsKey(key))
+                if (!result.ContainsKey(key))
                 {
-                    // Key already exists, skip...
+                    result.Add(key, value);
                     continue;
                 }
-                result.Add(key, value);
+
+                // Key already exists, check if values are the same
+                if (result[key] != value)
+                {
+                    result[key] = value;
+                }
             }
             return result;
         }

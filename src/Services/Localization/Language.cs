@@ -108,7 +108,7 @@
         public virtual TTo Translate(TFrom value)
         {
             // loop through table looking for result
-            if (value == null || !_map.TryGetValue(value, out TTo result))
+            if (value == null || !_map.TryGetValue(value, out TTo? result))
             {
                 result = DefaultValue;
             }
@@ -214,8 +214,22 @@
             CurrentCulture = new CultureInfo(localeCode);
 
             var path = Path.Combine(LocaleDirectory, localeCode + ".json");
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException($"Locale file '{localeCode}' at path '{path}' does not exist!");
+            }
+
             var data = File.ReadAllText(path);
+            if (string.IsNullOrEmpty(data))
+            {
+                throw new Exception($"Locale file '{path}' is empty!");
+            }
+
             var obj = data.FromJson<TDictionary>();
+            if (obj == null)
+            {
+                throw new NullReferenceException($"Failed to deserialize locale file '{path}'!");
+            }
             return obj;
         }
 

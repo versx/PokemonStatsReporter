@@ -17,6 +17,10 @@
     // TODO: Include forms with shiny/iv stats
     // TODO: Make statistic reporting plugin-able to support unlimited stat reporting
 
+    // TODO: Fix Nidoran male/female symbol
+    // TODO: Add custom date format
+    // TODO: Configurable stat hour check (i.e. 24 hours)
+
     public class StatisticReportsService : IStatisticReportsService, IDisposable
     {
         #region Variables
@@ -546,7 +550,7 @@
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
                 ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
                 var now = DateTime.Now;
-                var hoursAgo = TimeSpan.FromHours(24);
+                var hoursAgo = TimeSpan.FromHours(4); // TODO: 24 hours
 
                 var test = now.Subtract(hoursAgo);
                 var yesterday = Convert.ToUInt64(Math.Round(test.GetUnixTimestamp()));
