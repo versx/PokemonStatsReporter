@@ -1,6 +1,7 @@
 {
     "locale": "en",
     "statHours": 24,
+    "dateFormat": "dddd, MMMM d, yyyy",
     "servers": {
         "0000000000": {
             "bot": {

@@ -17,8 +17,6 @@
     // TODO: Include forms with shiny/iv stats
     // TODO: Make statistic reporting plugin-able to support unlimited stat reporting
 
-    // TODO: Add custom date format
-
     public class StatisticReportsService : IStatisticReportsService, IDisposable
     {
         #region Constants
@@ -145,7 +143,7 @@
             sorted.Sort();
             if (sorted.Count > 0)
             {
-                var date = DateTime.Now.Subtract(TimeSpan.FromHours(24)).ToLongDateString();
+                var date = DateTime.Now.Subtract(TimeSpan.FromHours(config.StatHours)).ToString(config.DateFormat);
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("SHINY_STATS_TITLE").FormatText(new { date }));
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("SHINY_STATS_NEWLINE"));
             }
@@ -245,7 +243,7 @@
             sorted.Sort();
             if (sorted.Count > 0)
             {
-                var date = DateTime.Now.Subtract(TimeSpan.FromHours(24)).ToLongDateString();
+                var date = DateTime.Now.Subtract(TimeSpan.FromHours(config.StatHours)).ToString(config.DateFormat);
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("HUNDO_STATS_TITLE").FormatText(new { date }));
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("HUNDO_STATS_NEWLINE"));
             }
@@ -353,7 +351,7 @@
             sorted.Sort();
             if (stats.Count > 0)
             {
-                var date = DateTime.Now.Subtract(TimeSpan.FromHours(24)).ToLongDateString();
+                var date = DateTime.Now.Subtract(TimeSpan.FromHours(config.StatHours)).ToString(config.DateFormat);
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("IV_STATS_TITLE").FormatText(new { iv = minimumIV, date }));
                 await statsChannel.SendMessageAsync(Translator.Instance.Translate("IV_STATS_NEWLINE"));
             }

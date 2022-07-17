@@ -25,6 +25,12 @@
         public ushort StatHours { get; set; }
 
         /// <summary>
+        /// Gets or sets the date format to use with statistic reports
+        /// </summary>
+        [JsonPropertyName("dateFormat")]
+        public string DateFormat { get; set; }
+
+        /// <summary>
         /// Gets or sets the Discord servers configuration
         /// </summary>
         [JsonPropertyName("servers")]
@@ -50,6 +56,8 @@
         public Config()
         {
             Locale = "en";
+            StatHours = 24;
+            DateFormat = "dddd, MMMM d, yyyy";
             FileName = Strings.ConfigFileName;
         }
 

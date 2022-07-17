@@ -28,6 +28,11 @@ Reports nightly at midnight all shiny, hundo, or custom IV statistics about Poke
     "locale": "en",
     // Amount of hours to check of previous data that will be included in statistic reports
     "statHours": 24,
+    // Custom date format to use with reports. Default will display as 'Saturday, March 26, 2020'
+    // More info:
+    // https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-date-and-time-format-strings
+    // https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    "dateFormat": "dddd, MMMM d, yyyy",
     // Discord servers that will receive the statistic reporting
     "servers": {
         // Discord server guild ID
