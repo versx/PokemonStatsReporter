@@ -156,8 +156,6 @@
                     continue;
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
-                pkmnName = CleanPokemonName(pkmnName);
-
                 var pkmnStats = stats[pokemonId];
                 var chance = pkmnStats.Shiny == 0 || pkmnStats.Total == 0
                     ? 0
@@ -258,8 +256,6 @@
                     continue;
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
-                pkmnName = CleanPokemonName(pkmnName);
-
                 var pkmnStats = stats[pokemonId];
                 var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0
                     ? 0
@@ -373,8 +369,6 @@
                 //var ratio = 0; // TODO: Ratio IV stats
                 var pkmnStats = new { Count = 0, Total = 0 }; // stats[pokemonId];
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
-                pkmnName = CleanPokemonName(pkmnName);
-
                 //sb.AppendLine($"- {pkmn.Name} (#{key}) {count:N0}");
 
                 //var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0 ? 0 : Convert.ToInt32(pkmnStats.Total / pkmnStats.Count);
@@ -651,13 +645,6 @@
             }
             _logger.LogError($"BuildIvStatsManifest: {dict}");
             return dict;
-        }
-
-        private static string CleanPokemonName(string name)
-        {
-            // ⚲
-            return name.Replace("&#9792;", "♀") // Female
-                       .Replace("&#9794;", "♂"); // Male 
         }
 
         #endregion

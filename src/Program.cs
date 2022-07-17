@@ -28,5 +28,4 @@ var reportsService = new StatisticReportsService(config, discordClientService);
 reportsService.Start();
 
 logger.LogInformation($"Initialized...");
-
 System.Diagnostics.Process.GetCurrentProcess().WaitForExit();
