@@ -17,12 +17,16 @@
     // TODO: Include forms with shiny/iv stats
     // TODO: Make statistic reporting plugin-able to support unlimited stat reporting
 
-    // TODO: Fix Nidoran male/female symbol
     // TODO: Add custom date format
 
     public class StatisticReportsService : IStatisticReportsService, IDisposable
     {
+        #region Constants
+
         private const string StatisticDateFormat = "yyyy/MM/dd";
+        private const ushort MaxDatabaseTimeoutS = 30;
+
+        #endregion
 
         #region Variables
 
@@ -152,6 +156,8 @@
                     continue;
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
+                pkmnName = CleanPokemonName(pkmnName);
+
                 var pkmnStats = stats[pokemonId];
                 var chance = pkmnStats.Shiny == 0 || pkmnStats.Total == 0
                     ? 0
@@ -252,6 +258,8 @@
                     continue;
 
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
+                pkmnName = CleanPokemonName(pkmnName);
+
                 var pkmnStats = stats[pokemonId];
                 var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0
                     ? 0
@@ -365,6 +373,8 @@
                 //var ratio = 0; // TODO: Ratio IV stats
                 var pkmnStats = new { Count = 0, Total = 0 }; // stats[pokemonId];
                 var pkmnName = Translator.Instance.GetPokemonName(pokemonId);
+                pkmnName = CleanPokemonName(pkmnName);
+
                 //sb.AppendLine($"- {pkmn.Name} (#{key}) {count:N0}");
 
                 //var chance = pkmnStats.Count == 0 || pkmnStats.Total == 0 ? 0 : Convert.ToInt32(pkmnStats.Total / pkmnStats.Count);
@@ -447,7 +457,7 @@
             _logger.LogInformation($"Finished daily stats reporting for all guilds.");
         }
 
-        internal static async Task<Dictionary<uint, ShinyPokemonStats>> GetShinyStatsAsync(string connectionString, ushort statHours = 24)
+        private static async Task<Dictionary<uint, ShinyPokemonStats>> GetShinyStatsAsync(string connectionString, ushort statHours = 24)
         {
             var list = new Dictionary<uint, ShinyPokemonStats>
             {
@@ -456,7 +466,7 @@
             try
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
-                ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
+                ctx.Database.SetCommandTimeout(MaxDatabaseTimeoutS); // 30 seconds timeout
                 var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(statHours)).ToString(StatisticDateFormat);
                 var pokemonShiny = (await ctx.PokemonStatsShiny.ToListAsync())
                     .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)
@@ -495,7 +505,7 @@
             return list;
         }
 
-        internal static async Task<Dictionary<uint, HundoPokemonStats>> GetHundoStatsAsync(string connectionString, ushort statHours = 24)
+        private static async Task<Dictionary<uint, HundoPokemonStats>> GetHundoStatsAsync(string connectionString, ushort statHours = 24)
         {
             var list = new Dictionary<uint, HundoPokemonStats>
             {
@@ -504,7 +514,7 @@
             try
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
-                ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
+                ctx.Database.SetCommandTimeout(MaxDatabaseTimeoutS);
                 var yesterday = DateTime.Now.Subtract(TimeSpan.FromHours(statHours)).ToString(StatisticDateFormat);
                 var pokemonHundo = (await ctx.PokemonStatsHundo.ToListAsync())
                     .Where(stat => stat.Date.ToString(StatisticDateFormat) == yesterday)
@@ -543,13 +553,13 @@
             return list;
         }
 
-        internal static Dictionary<uint, Dictionary<double, ulong>> GetIvStats(string connectionString, double minimumIV, ushort statHours = 24)
+        private static Dictionary<uint, Dictionary<double, ulong>> GetIvStats(string connectionString, double minimumIV, ushort statHours = 24)
         {
             // TODO: Get IV stats with and without IV Pokemon { 25: { total, count, date }, etc.. }
             try
             {
                 using var ctx = DbContextFactory.CreateMapContext(connectionString);
-                ctx.Database.SetCommandTimeout(TimeSpan.FromSeconds(30)); // 30 seconds timeout
+                ctx.Database.SetCommandTimeout(MaxDatabaseTimeoutS);
                 var now = DateTime.Now;
                 var hoursAgo = TimeSpan.FromHours(statHours);
 
@@ -641,6 +651,13 @@
             }
             _logger.LogError($"BuildIvStatsManifest: {dict}");
             return dict;
+        }
+
+        private static string CleanPokemonName(string name)
+        {
+            // ⚲
+            return name.Replace("&#9792;", "♀") // Female
+                       .Replace("&#9794;", "♂"); // Male 
         }
 
         #endregion

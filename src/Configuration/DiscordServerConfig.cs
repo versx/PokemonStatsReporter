@@ -13,7 +13,7 @@
         /// Gets or sets the bot configuration to use
         /// </summary>
         [JsonPropertyName("bot")]
-        public BotConfig Bot { get; set; }
+        public BotConfig Bot { get; set; } = new();
 
         //[JsonProperty("locale")]
         //public string Locale { get; set; }
