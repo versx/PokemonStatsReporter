@@ -453,6 +453,7 @@
         {
             var list = new Dictionary<uint, ShinyPokemonStats>
             {
+                // Index 0 will hold our overall shiny statistics for the day
                 { 0, new ShinyPokemonStats { PokemonId = 0 } }
             };
             try
@@ -501,6 +502,7 @@
         {
             var list = new Dictionary<uint, HundoPokemonStats>
             {
+                // Index 0 will hold our overall hundo statistics for the day
                 { 0, new HundoPokemonStats { PokemonId = 0 } }
             };
             try
@@ -624,7 +626,7 @@
 
         private static Dictionary<uint, Dictionary<double, ulong>> BuildIvStatsManifest(List<Pokemon> pokemon, double minimumIV = 100)
         {
-            // TODO: Replace method with Linq equivilant eventually
+            // TODO: Replace method with Linq equivalent eventually
             var dict = new Dictionary<uint, Dictionary<double, ulong>>();
             foreach (var pkmn in pokemon)
             {

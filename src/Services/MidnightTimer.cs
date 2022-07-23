@@ -11,8 +11,14 @@ namespace PokemonStatsReporter.Services
     /// </summary>
     public class TimeReachedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets the current midnight time
+        /// </summary>
         public DateTime Time { get; }
 
+        /// <summary>
+        /// Gets the time zone <seealso cref="Time"/> is in
+        /// </summary>
         public string TimeZone { get; }
 
         public TimeReachedEventArgs(DateTime time, string timeZone)
@@ -53,7 +59,7 @@ namespace PokemonStatsReporter.Services
         /// <summary>
         /// Occurs whens midnight occurs, subscribe to this
         /// </summary>
-        public event EventHandler<TimeReachedEventArgs> TimeReached;
+        public event EventHandler<TimeReachedEventArgs>? TimeReached;
 
         /// <summary>
         /// Standard Event/Delegate handler, if its not null, fire the event
@@ -188,7 +194,7 @@ namespace PokemonStatsReporter.Services
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
             // Stop the orginal timer
             Stop();
