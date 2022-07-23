@@ -1,5 +1,7 @@
 {
     "locale": "en",
+    "statHours": 24,
+    "dateFormat": "dddd, MMMM d, yyyy",
     "servers": {
         "0000000000": {
             "bot": {
@@ -15,10 +17,16 @@
                     "clearMessages": false,
                     "channelId": 0000000000
                 },
-                "iv": {
+                "hundo": {
                     "enabled": false,
                     "clearMessages": false,
                     "channelId": 0000000000
+                },
+                "iv": {
+                    "enabled": false,
+                    "clearMessages": false,
+                    "channelId": 0000000000,
+                    "minimumIV": 100
                 }
             }
         }

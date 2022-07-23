@@ -1,11 +1,11 @@
-﻿namespace StatsReporter.Data.Factories
+﻿namespace PokemonStatsReporter.Data.Factories
 {
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.ChangeTracking;
     using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-    using StatsReporter.Data.Contexts;
-    using StatsReporter.Extensions;
+    using PokemonStatsReporter.Data.Contexts;
+    using PokemonStatsReporter.Extensions;
 
     public class DbContextFactory
     {

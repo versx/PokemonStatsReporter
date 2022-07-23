@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Configuration
+﻿namespace PokemonStatsReporter.Configuration
 {
     using System.Text.Json.Serialization;
 

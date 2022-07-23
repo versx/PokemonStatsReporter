@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Extensions
+﻿namespace PokemonStatsReporter.Extensions
 {
     using System;
     //using System.Linq;
@@ -54,7 +54,7 @@
         /// Get Unix timestamp from current date time
         /// </summary>
         /// <param name="now">Date and time to get unix variation from</param>
-        /// <returns>Returns Unix timestamp</returns>
+        /// <returns>Returns Unix timestamp in seconds</returns>
         public static double GetUnixTimestamp(this DateTime now)
         {
             return Math.Round(now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);

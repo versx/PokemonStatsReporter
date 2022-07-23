@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Statistics
+﻿namespace PokemonStatsReporter.Services.Statistics
 {
     public interface IStatisticReportsService
     {

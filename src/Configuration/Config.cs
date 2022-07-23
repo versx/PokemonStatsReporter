@@ -1,10 +1,8 @@
-﻿namespace StatsReporter.Configuration
+﻿namespace PokemonStatsReporter.Configuration
 {
     using System.Text.Json.Serialization;
 
-    using Microsoft.Extensions.Logging;
-
-    using StatsReporter.Extensions;
+    using PokemonStatsReporter.Extensions;
 
     /// <summary>
     /// Configuration file class
@@ -18,6 +16,19 @@
         /// </summary>
         [JsonPropertyName("locale")]
         public string Locale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the amount of hours to check for previous data
+        /// to include with statistic reports
+        /// </summary>
+        [JsonPropertyName("statHours")]
+        public ushort StatHours { get; set; }
+
+        /// <summary>
+        /// Gets or sets the date format to use with statistic reports
+        /// </summary>
+        [JsonPropertyName("dateFormat")]
+        public string DateFormat { get; set; }
 
         /// <summary>
         /// Gets or sets the Discord servers configuration
@@ -45,6 +56,9 @@
         public Config()
         {
             Locale = "en";
+            StatHours = 24;
+            DateFormat = "dddd, MMMM d, yyyy";
+            FileName = Strings.ConfigFileName;
         }
 
         /// <summary>

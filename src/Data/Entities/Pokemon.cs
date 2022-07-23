@@ -1,8 +1,10 @@
-﻿namespace StatsReporter.Data.Entities
+﻿namespace PokemonStatsReporter.Data.Entities
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Text.Json.Serialization;
+
+    using PokemonStatsReporter.Extensions;
 
     [Table("pokemon")]
     public sealed class Pokemon
@@ -31,29 +33,7 @@
             JsonIgnore,
             NotMapped,
         ]
-        public string IV => IVReal == -1 ? "?" : IVReal + "%";
-
-        [
-
-            JsonIgnore,
-            NotMapped,
-        ]
-        public double IVReal
-        {
-            get
-            {
-                if (Attack == null || Defense == null || Stamina == null)
-                {
-                    return -1;
-                }
-
-                var atk = Attack ?? 0;
-                var def = Defense ?? 0;
-                var sta = Stamina ?? 0;
-
-                return Math.Round((sta + atk + def) * 100.0 / 45.0, 1);
-            }
-        }
+        public double IVReal => this.CalculateIV();
 
         [
             JsonPropertyName("individual_stamina"),
@@ -86,10 +66,13 @@
         public bool IsDitto => PokemonId == 132;
 
         [
-            JsonPropertyName("display_pokemon_id"),
-            Column("display_pokemon_id"),
+            JsonIgnore,
+            NotMapped,
         ]
-        public uint? DisplayPokemonId { get; set; }
+        public bool IsMissingStats =>
+            Attack == null ||
+            Defense == null ||
+            Stamina == null;
 
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Services.Statistics.Models
+﻿namespace PokemonStatsReporter.Services.Statistics.Models
 {
     internal class HundoPokemonStats
     {

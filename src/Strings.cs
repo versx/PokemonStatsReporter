@@ -1,4 +1,4 @@
-﻿namespace StatsReporter
+﻿namespace PokemonStatsReporter
 {
     public static class Strings
     {

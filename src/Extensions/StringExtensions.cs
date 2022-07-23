@@ -1,4 +1,4 @@
-﻿namespace StatsReporter.Extensions
+﻿namespace PokemonStatsReporter.Extensions
 {
     using System;
     using System.Collections.Generic;
